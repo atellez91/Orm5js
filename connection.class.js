@@ -94,7 +94,7 @@ class connectionDB {
 	 * Ejecuta una consulta
 	 * @param {String} query 
 	 */
-	execute(query) {
+	execute(query, callback = null) {
 		if(this.conn == null) {
 			//this.open();
 		}
@@ -103,9 +103,12 @@ class connectionDB {
 		this.conn.transaction(function(cntxt) {
 
 			cntxt.executeSql(query,[], function(tx, results){
-				//console.log("RESSS");
-				//console.log(tx,results);
 				console.log("RESULTADO ("+results.rows.length+"):",results.rows);
+				if(typeof callback == "function") {
+					callback(results.rows);
+				}
+			}, function(e){
+				console.error("SQL ERROR: ", e);
 			});
 		});
 
